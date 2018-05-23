@@ -1,5 +1,6 @@
 # This is an example of a K-Nearest Neighbors classifier on MNIST data.
 # We try k=1...5 to show how we might choose the best k.
+# The data, also known as MNIST, we used here can be found on kaggle.
 from __future__ import print_function, division
 from future.utils import iteritems
 import numpy as np
@@ -8,13 +9,13 @@ import matplotlib.pyplot as plt
 from sortedcontainers import SortedList
 from datetime import datetime
 
-# Note: You can't use SortedDict because the key is distance
+# Note: We can't use SortedDict because the key is the distance
 # if 2 close points are the same distance away, one will be overwritten
 
 # We'll first write a module to help us read in the file and do some data preprocessing
 def get_data(limit=None):
     print("Reading in and transforming data...")
-    df = pd.read_csv('/Users/alex/Desktop/DeepLearningPrerequisites/KNN/Datasets/train.csv')
+    df = pd.read_csv('train.csv')
     data = df.as_matrix()
     np.random.shuffle(data)  # Randomly reindex the rows and sort it
     X = data[:, 1:] / 255.0  # The rango of data is from 0 to 255
@@ -23,37 +24,8 @@ def get_data(limit=None):
         X, Y = X[:limit], Y[:limit]
     return X, Y
 
-'''
-def get_xor():
-    X = np.zeros((200, 2))
-    X[:50] = np.random.random((50, 2)) / 2 + 0.5 # (0.5-1, 0.5-1)
-    X[50:100] = np.random.random((50, 2)) / 2 # (0-0.5, 0-0.5)
-    X[100:150] = np.random.random((50, 2)) / 2 + np.array([[0, 0.5]]) # (0-0.5, 0.5-1)
-    X[150:] = np.random.random((50, 2)) / 2 + np.array([[0.5, 0]]) # (0.5-1, 0-0.5)
-    Y = np.array([0]*100 + [1]*100)
-    return X, Y
 
-def get_donut():
-    N = 200
-    R_inner = 5
-    R_outer = 10
-
-    # distance from origin is radius + random normal
-    # angle theta is uniformly distributed between (0, 2pi)
-    R1 = np.random.randn(N//2) + R_inner
-    theta = 2*np.pi*np.random.random(N//2)
-    X_inner = np.concatenate([[R1 * np.cos(theta)], [R1 * np.sin(theta)]]).T
-
-    R2 = np.random.randn(N//2) + R_outer
-    theta = 2*np.pi*np.random.random(N//2)
-    X_outer = np.concatenate([[R2 * np.cos(theta)], [R2 * np.sin(theta)]]).T
-
-    X = np.concatenate([ X_inner, X_outer ])
-    Y = np.array([0]*(N//2) + [1]*(N//2))
-    return X, Y
-'''
-
-# Now we define our KNN module
+# Now we will define our KNN module
 class KNN(object):
     def __init__(self, k):
         self.k = k
@@ -94,7 +66,7 @@ class KNN(object):
         P = self.predict(X)
         return np.mean(P == Y)
 
-
+# Now let's run our model
 if __name__ == '__main__':
     X, Y = get_data(2000)  # we only take 2000 rows
     Ntrain = 1000
@@ -146,6 +118,3 @@ test1 = {'a': 20,
 test1.get('a', 0)
 test1.get('z', 0)  # It returns 0 because we didn't find 'z' in the key
 test1.get('z', None)  # Nothing returns
-
-
-
